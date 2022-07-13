@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOSCOM COP Chat Bot</title>
+<!--  <link rel="icon" href="static/favicon.ico/favicon-96x96.png" type="image/x-icon">-->
+  <!-- <link rel="shortcut icon" href="static/favicon.ico/favicon-96x96.png" type="image/x-icon"> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+          crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+          integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+          crossorigin="anonymous"></script>
+  <script src="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></script>
+</head>
+<style>
+    * { box-sizing: border-box; }
+      body { margin: 0px; }
+      main { padding-bottom: 100px; }
+      header {
+        background-color: #ffeb3b;
+        height: 700px;
+        padding: 100px;
+      }
+      section {
+        display: flex;
+        justify-content: space-between;
+        padding: 5%;
+      }
+      section div {
+        background-color: #ff9800;
+        width: 100%;
+        height: 300px;
+      }
+
+      /* Scroll Animation (sa, 스크롤 애니메이션) */
+      .sa {
+        opacity: 0;
+        transition: all .5s ease;
+      }
+
+      /* 아래에서 위로 페이드 인 */
+      .sa-up {
+        transform: translate(0, 100px);
+      }
+      /* 위에서 아래로 페이드 인 */
+      .sa-down {
+        transform: translate(0, -100px);
+      }
+      /* 왼쪽에서 오른쪽으로 페이드 인 */
+      .sa-right {
+        transform: translate(-100px, 0);
+      }
+      /* 오른쪽에서 왼쪽으로 페이드 인 */
+      .sa-left {
+        transform: translate(100px, 0);
+      }
+      /* 왼쪽으로 회전하면서 페이드 인 */
+      .sa-rotateL {
+        transform: rotate(180deg);
+      }
+      /* 오른쪽으로 회전하면서 페이드 인 */
+      .sa-rotateR {
+        transform: rotate(-180deg);
+      }
+      /* 작아진 상태에서 커지면서 페이드 인 */
+      .sa-scaleUp {
+        transform: scale(.5);
+      }
+      /* 커진 상태에서 작아지면서 페이드 인 */
+      .sa-scaleDown {
+        transform: scale(1.5);
+      }
+
+      .sa.show {
+        opacity: 1;
+        transform: none;
+      }
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:22px;
+}
+</style>
+
+<body>
+<header>
+  <h1>무슨무슨<br />이런저런 정보</h1>
+</header>
+<main>
+  <section>
+    <div class="sa sa-up">뭔가 정보 워드클라우드?</div>
+  </section>
+  <section>
+    <div class="sa sa-down">뭔가 정보 뉴스목록?</div>
+  </section>
+  <section>
+    <div class="sa sa-rotateL">디비전 9</div>
+    <div class="sa sa-rotateR">디비전 10</div>
+    <div class="sa sa-scaleUp">디비전 11</div>
+    <div class="sa sa-scaleDown">디비전 12</div>
+  </section>
+  <a href="room.html" id="btn_submit" class="float">
+    <!--  <a href="#" onclick="location.href='room.html'" class="float">-->
+    <i class="fa fa-plus my-float"></i>
+  </a>
+</main>
+<script>
+    // Scroll Animation (sa, 스크롤 애니메이션)
+    const saDefaultMargin = 300;
+    let saTriggerMargin = 0;
+    let saTriggerHeight = 0;
+    const saElementList = document.querySelectorAll('.sa');
+
+    const saFunc = function() {
+      for (const element of saElementList) {
+        if (!element.classList.contains('show')) {
+          if (element.dataset.saMargin) {
+            saTriggerMargin = parseInt(element.dataset.saMargin);
+          } else {
+            saTriggerMargin = saDefaultMargin;
+          }
+
+          if (element.dataset.saTrigger) {
+            saTriggerHeight = document.querySelector(element.dataset.saTrigger).getBoundingClientRect().top + saTriggerMargin;
+          } else {
+            saTriggerHeight = element.getBoundingClientRect().top + saTriggerMargin;
+          }
+
+          if (window.innerHeight > saTriggerHeight) {
+            element.classList.add('show');
+          }
+        }
+      }
+    }
+
+    window.addEventListener('load', saFunc);
+    window.addEventListener('scroll', saFunc);
+    $('#btn_submit').click(function () {
+      $(function () {
+          $("body div").fadeIn(500, function () {
+              $(this).animate({
+                  "top": "150px"
+              },1000);
+          });
+
+          $("a").click(function () {
+              var url = $(this).attr("href");
+              $("body div").animate({
+                  "opacity": "0",
+                  "top": "10px"
+              },500, function () {
+                  document.location.href = url;
+              });
+
+              return false;
+          });
+      });
+    });
+    function send() {
+      location.href="room.html";
+    }
+
+  </script>
+</body>
+
+</html>
