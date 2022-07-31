@@ -159,11 +159,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     fun goNextCard() {
-        val new = adapter.getSpots()
+        val new = adapter.getCards()
         Collections.rotate(new, -1)
 //        val callback = CardDiffCallback(old, new)
 //        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
 
         //--UPDATE CARD COUNT
         cardcount?.setText("${new[0].id}/${adapter.itemCount}")
@@ -173,11 +173,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     fun goPrevCard() {
-        val new = adapter.getSpots()
+        val new = adapter.getCards()
         Collections.rotate(new, 1)
 //        val callback = CardDiffCallback(old, new)
 //        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
 
         //--UPDATE CARD COUNT
 //        cardcount?.setText("${adapter.itemCount}/${callback.newListSize}")
@@ -205,11 +205,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     //--CARD MODIFICATION
     private fun paginate() {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = old.plus(createCardItems())
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
 
         //--UPDATE CARD COUNT
         cardcount?.setText("${adapter.itemCount}/${callback.newListSize}")
@@ -218,16 +218,16 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun reload() {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = createCardItems()
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
     }
 
     private fun addFirst(size: Int) {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             for (i in 0 until size) {
@@ -236,28 +236,28 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
     }
 
     private fun addLast(size: Int) {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             addAll(List(size) { createCardItem() })
         }
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
     }
 
     private fun removeFirst(size: Int) {
-        if (adapter.getSpots().isEmpty()) {
+        if (adapter.getCards().isEmpty()) {
             return
         }
 
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             for (i in 0 until size) {
@@ -266,16 +266,16 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
     }
 
     private fun removeLast(size: Int) {
-        if (adapter.getSpots().isEmpty()) {
+        if (adapter.getCards().isEmpty()) {
             return
         }
 
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             for (i in 0 until size) {
@@ -284,23 +284,23 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
     }
 
     private fun replace() {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             removeAt(manager.topPosition)
             add(manager.topPosition, createCardItem())
         }
-        adapter.setSpots(new)
+        adapter.setCards(new)
         adapter.notifyItemChanged(manager.topPosition)
     }
 
     private fun swap() {
-        val old = adapter.getSpots()
+        val old = adapter.getCards()
         val new = mutableListOf<CardItem>().apply {
             addAll(old)
             val first = removeAt(manager.topPosition)
@@ -310,8 +310,12 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
         val callback = CardDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
+        adapter.setCards(new)
         result.dispatchUpdatesTo(adapter)
+    }
+
+    private fun addCardItem(item:CardItem) {
+
     }
 
     //--SAMPLE CARD DATAS
@@ -329,12 +333,15 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         CardItems.add(CardItem(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
         CardItems.add(CardItem(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
         CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
-        CardItems.add(CardItem(name = "Empire State Building", city = "New York", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
-        CardItems.add(CardItem(name = "The statue of Liberty", city = "New York", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
-        CardItems.add(CardItem(name = "Louvre Museum", city = "Paris", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
-        CardItems.add(CardItem(name = "Eiffel Tower", city = "Paris", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
-        CardItems.add(CardItem(name = "Big Ben", city = "London", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
-        CardItems.add(CardItem(name = "Great Wall of China", city = "China", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+//        CardItems.add(CardItem(name = "Empire State Building", city = "New York", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
+//        CardItems.add(CardItem(name = "The statue of Liberty", city = "New York", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
+//        CardItems.add(CardItem(name = "Louvre Museum", city = "Paris", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
+//        CardItems.add(CardItem(name = "Eiffel Tower", city = "Paris", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
+//        CardItems.add(CardItem(name = "Big Ben", city = "London", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
+//        CardItems.add(CardItem(name = "Great Wall of China", city = "China", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
         return CardItems
     }
 

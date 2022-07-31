@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:background="@color/r2Primary"
         android:descendantFocusability="blocksDescendants"
+        android:clipChildren="false"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -26,9 +27,12 @@
         <com.yuyakaido.android.cardstackview.CardStackView
             android:id="@+id/card_stack_view"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_marginStart="@dimen/spacing_mlarge"
-            android:layout_marginEnd="@dimen/spacing_mlarge">
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/spacing_mlarge"
+            android:paddingBottom="150dp"
+            android:paddingStart="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_medium"
+            android:clipToPadding="false">
         </com.yuyakaido.android.cardstackview.CardStackView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
