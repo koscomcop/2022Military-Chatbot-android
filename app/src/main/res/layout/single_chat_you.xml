@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/singleChatLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/chat_text_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/theme_chatroom_bubble_you_01_image"
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:text="TextView"/>
+
+    <TextView
+        android:id="@+id/chat_time_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="time"
+        android:layout_alignBottom="@+id/chat_text_you"
+        android:layout_toRightOf="@+id/chat_text_you" />
+
+
+    <ImageView
+        android:id="@+id/chat_favorite_you"
+        android:src="@android:drawable/checkbox_on_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/chat_text_you"
+        android:layout_toRightOf="@id/chat_time_you"/>
+
+
+</RelativeLayout>

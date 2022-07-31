@@ -1,5 +1,2 @@
-// GENERATED FILE - DO NOT EDIT
-apply from: "cdv-gradle-name.gradle"
-include ":"
-include ":CordovaLib"
-include ":app"
+include ':app'
+rootProject.name = "MilitaryAIBot"
