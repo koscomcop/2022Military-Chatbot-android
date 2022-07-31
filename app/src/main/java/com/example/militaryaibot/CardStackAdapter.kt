@@ -1,14 +1,18 @@
 package com.example.militaryaibot
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.militaryaibot.ChatMsgAdapter.*
+import com.google.android.material.card.MaterialCardView
+import kotlin.random.Random
 
 class CardStackAdapter(
     private var cards: List<CardItem> = emptyList()
@@ -20,15 +24,16 @@ class CardStackAdapter(
             CardType.CARD_IMAGE_FULL -> {
                 return CardImageViewHolder(inflater.inflate(R.layout.card_image, parent, false))
             }
-            else ->
+            else -> {
                 return CardText1ViewHolder(inflater.inflate(R.layout.card_weather, parent, false))
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val curcard = cards[position]
 
-        when(cards[position].cardtype) {
+        when(curcard.cardtype) {
             CardType.CARD_IMAGE_FULL -> {
                 var curholder = holder as CardImageViewHolder
 
@@ -43,6 +48,17 @@ class CardStackAdapter(
             }
             CardType.CARD_TEXT1 -> {
                 var curholder = holder as CardText1ViewHolder
+
+                var idx = curcard.coloridx
+                var color_main = Color.parseColor(CardType.CARD_COLOR_MAIN[idx])
+                var color_sub = Color.parseColor(CardType.CARD_COLOR_SUB[idx])
+
+                curholder.card.setStrokeColor(color_main)
+                curholder.header.setBackgroundColor(color_main)
+                curholder.content.setBackgroundColor(color_sub)
+                curholder.name.setTextColor(color_sub)
+                curholder.info1.setTextColor(color_main)
+                curholder.info2.setTextColor(color_main)
 
                 curholder.name.text = "기상정보"
                 curholder.info1.text = "<전국 대부분 비 확대, 제주도와 남해안 중심 많은 비>"
@@ -80,10 +96,15 @@ class CardStackAdapter(
         val name: TextView = view.findViewById(R.id.item_name)
         var city: TextView = view.findViewById(R.id.item_city)
         var image: ImageView = view.findViewById(R.id.item_image)
+
     }
     class CardText1ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.item_name)
         var info1: TextView = view.findViewById(R.id.item_info1)
         var info2: TextView = view.findViewById(R.id.item_info2)
+
+        var card: MaterialCardView = view.findViewById(R.id.card_view) as MaterialCardView
+        var header: LinearLayout = view.findViewById(R.id.item_title) as LinearLayout
+        var content: LinearLayout = view.findViewById(R.id.item_info) as LinearLayout
     }
 }
