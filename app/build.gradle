@@ -21,6 +21,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "CHAT_SERVER", getProperty("RELEASE_SERVER")
+        }
+        debug {
+            buildConfigField "String", "CHAT_SERVER", getProperty("TEST_SERVER")
         }
     }
     compileOptions {

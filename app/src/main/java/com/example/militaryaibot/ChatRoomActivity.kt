@@ -1,11 +1,8 @@
 package com.example.militaryaibot
 
-import android.Manifest
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.Display
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,12 +19,14 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import org.json.JSONObject
 import java.io.*
 import java.net.HttpRetryException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ChatRoomActivity : AppCompatActivity() {
     private var CHAT_STORE_PATH: String? = null
@@ -95,6 +94,10 @@ class ChatRoomActivity : AppCompatActivity() {
                 addMessage(message)
                 if (message == "api호출 테스트") {
                     RequestRandomUser().execute("https://api.randomuser.me/")
+                    return@OnClickListener
+                }
+                else {
+                    RequestChatRpl().execute(BuildConfig.CHAT_SERVER, message)
                     return@OnClickListener
                 }
             }
@@ -231,6 +234,72 @@ class ChatRoomActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, R.string.err_save_chat, Toast.LENGTH_LONG)
+        }
+    }
+
+    //--REQUEST RANDOM USER--
+    internal inner class RequestChatRpl :
+        AsyncTask<String?, Void?, String>() {
+        override fun onPostExecute(string: String) {
+            super.onPostExecute(string)
+            if (string != "") {
+                try {
+                    val retNode = objectMapper.readTree(string)
+                    val response = retNode["outputs"] as ObjectNode
+                    addReply(getJsonData(response, "text"))
+                } catch (e: JsonProcessingException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        private fun getJsonData(node: JsonNode, key: String): String {
+            return node[key].asText()
+        }
+
+        override fun doInBackground(vararg params: String?): String? {
+            var conn: HttpURLConnection? = null
+            val `is`: InputStream? = null
+            val sb = StringBuilder()
+            var nRes = -1
+            try {
+                val url = URL(params[0])
+                val msg = params[1]
+
+                conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.doOutput = true
+                conn.doInput = true
+
+                val wr = OutputStreamWriter(conn.outputStream)
+                wr.write("input1=${msg}")
+                wr.flush()
+
+                nRes = conn.responseCode
+                if (nRes != HttpURLConnection.HTTP_OK) throw HttpRetryException(
+                    conn.responseMessage, nRes
+                )
+                var line: String? = ""
+                val br = BufferedReader(
+                    InputStreamReader(
+                        conn.inputStream
+                    )
+                )
+                while (br.readLine().also { line = it } != null) sb.append(line)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                if (`is` != null) {
+                    try {
+                        `is`.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+                conn?.disconnect()
+                return if (nRes > 0) sb.toString() else ""
+            }
         }
     }
 

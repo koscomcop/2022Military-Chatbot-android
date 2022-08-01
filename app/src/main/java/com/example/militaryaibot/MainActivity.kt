@@ -329,13 +329,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createCardItems(): List<CardItem> {
         val CardItems = ArrayList<CardItem>()
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
         CardItems.add(CardItem(name = "Yasaka Shrine", city = "Kyoto", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
         CardItems.add(CardItem(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
         CardItems.add(CardItem(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
         CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
 //        CardItems.add(CardItem(name = "Empire State Building", city = "New York", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
 //        CardItems.add(CardItem(name = "The statue of Liberty", city = "New York", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
 //        CardItems.add(CardItem(name = "Louvre Museum", city = "Paris", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
