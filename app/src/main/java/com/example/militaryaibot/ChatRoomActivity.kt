@@ -92,14 +92,8 @@ class ChatRoomActivity : AppCompatActivity() {
             val message = mChatMsgTxt!!.text.toString()
             if (message != "") {
                 addMessage(message)
-                if (message == "api호출 테스트") {
-                    RequestRandomUser().execute("https://api.randomuser.me/")
-                    return@OnClickListener
-                }
-                else {
-                    RequestChatRpl().execute(BuildConfig.CHAT_SERVER, message)
-                    return@OnClickListener
-                }
+                RequestChatRpl().execute(BuildConfig.CHAT_SERVER, message)
+                return@OnClickListener
             }
         })
 
@@ -276,85 +270,6 @@ class ChatRoomActivity : AppCompatActivity() {
                 wr.write("input1=${msg}")
                 wr.flush()
 
-                nRes = conn.responseCode
-                if (nRes != HttpURLConnection.HTTP_OK) throw HttpRetryException(
-                    conn.responseMessage, nRes
-                )
-                var line: String? = ""
-                val br = BufferedReader(
-                    InputStreamReader(
-                        conn.inputStream
-                    )
-                )
-                while (br.readLine().also { line = it } != null) sb.append(line)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                if (`is` != null) {
-                    try {
-                        `is`.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-                conn?.disconnect()
-                return if (nRes > 0) sb.toString() else ""
-            }
-        }
-    }
-
-    //--REQUEST RANDOM USER--
-    internal inner class RequestRandomUser :
-        AsyncTask<String?, Void?, String>() {
-        override fun onPostExecute(string: String) {
-            super.onPostExecute(string)
-            if (string != "") {
-                try {
-                    val retNode = objectMapper.readTree(string)
-                    val userInfo = retNode["results"][0] as ObjectNode
-                    val prettyMessage = String.format(
-                        "[%s.%s %s(%s세)]\n주소: %s %s %s %s\n이메일: %s\n핸드폰: %s\n사진: %s",
-                        getJsonData(userInfo["name"], "title"),
-                        getJsonData(userInfo["name"], "first"),
-                        getJsonData(
-                            userInfo["name"], "last"
-                        ),
-                        getJsonData(userInfo["dob"], "age"),
-                        getJsonData(userInfo["location"]["street"], "name"),
-                        getJsonData(userInfo["location"], "city"),
-                        getJsonData(
-                            userInfo["location"], "state"
-                        ),
-                        getJsonData(userInfo["location"], "country"),
-                        getJsonData(userInfo, "email"),
-                        getJsonData(userInfo, "cell"),
-                        getJsonData(
-                            userInfo["picture"], "large"
-                        )
-                    )
-                    addReply(prettyMessage)
-                } catch (e: JsonProcessingException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        private fun getJsonData(node: JsonNode, key: String): String {
-            return node[key].asText()
-        }
-
-        override fun doInBackground(vararg params: String?): String? {
-            var conn: HttpURLConnection? = null
-            val `is`: InputStream? = null
-            val sb = StringBuilder()
-            var nRes = -1
-            try {
-                val url = URL(params[0])
-                conn = url.openConnection() as HttpURLConnection
-                conn.readTimeout = 5000
-                conn!!.connectTimeout = 5000
-                conn.requestMethod = "GET"
-                conn.connect()
                 nRes = conn.responseCode
                 if (nRes != HttpURLConnection.HTTP_OK) throw HttpRetryException(
                     conn.responseMessage, nRes

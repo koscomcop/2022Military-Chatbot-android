@@ -14,7 +14,12 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ////////////////////////////////////////////////////////////
+        // Build Configuration
+        ////////////////////////////////////////////////////////////
+        buildConfigField("String", "WEATHER_API", getProperty("WEATHER_API"))
+        buildConfigField("String", "WEATHER_KEY", getProperty("WEATHER_KEY"))
+
     }
 
     buildTypes {
@@ -37,7 +42,9 @@ android {
 }
 
 dependencies {
-
+    ////////////////////////////////////////////////////////////
+    // Dependent Library Implementation
+    ////////////////////////////////////////////////////////////
     implementation 'com.airbnb.android:lottie:4.2.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
