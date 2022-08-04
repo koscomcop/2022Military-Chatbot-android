@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     //--REQUEST RANDOM USER--
     internal inner class RequestWeatherInfo :
         AsyncTask<Double?, Void?, String>() {
+
         override fun onPostExecute(string: String) {
             super.onPostExecute(string)
             if (string != "") {
@@ -150,9 +152,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         prettyMessage += String.format("[%s] %s\n", getJsonData(item, "category"), getJsonData(item, "obsrValue"))
                     }
 
-                    val a = getJsonData(retNode["response"]["header"], "resultCode")
-                    val b = getJsonData(retNode["response"]["header"], "resultMsg")
-                    addLast(1, CardItem(name = a, city = b, url = "https://source.unsplash.com/Xq1ntWruZQI/600x800")
+                    addLast(1, CardItem(name = "기상정보", info1 = "<오늘의 날씨 요약>", info2 = prettyMessage, cardtype = CardType.CARD_TEXT1)
                     )
 
                 } catch (e: JsonProcessingException) {
@@ -171,16 +171,28 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             val sb = StringBuilder()
             var nRes = -1
             try {
-                val latitude = params[0]
-                val longitude = params[1]
-                val url = URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=yb1vVjpJ7ztUOk%2F1ze%2FsH9%2BtMLx1zw8M7FMGix0pTlVJFArMv2bpBnVB%2Fwe8QX5JuJmUO%2BAxS1zDoM9u5%2BmxTw%3D%3D&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127")
+                val latitude = params[0]?.toInt()
+                val longitude = params[1]?.toInt()
+//                val url = URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=yb1vVjpJ7ztUOk%2F1ze%2FsH9%2BtMLx1zw8M7FMGix0pTlVJFArMv2bpBnVB%2Fwe8QX5JuJmUO%2BAxS1zDoM9u5%2BmxTw%3D%3D&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127")
+                val url = URL(Uri.parse(BuildConfig.WEATHER_API).buildUpon()
+                        .appendQueryParameter("serviceKey", BuildConfig.WEATHER_KEY)
+                        .appendQueryParameter("pageNo", "1")
+                        .appendQueryParameter("numOfRows", "1000")
+                        .appendQueryParameter("dataType", "JSON")
+                        .appendQueryParameter("base_date", "20220804")
+                        .appendQueryParameter("base_time", "0600")
+                        .appendQueryParameter("nx", latitude.toString())
+                        .appendQueryParameter("ny", longitude.toString())
+                        .build().toString())
 
+
+                // serviceKey=yb1v pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127
                 trustAllHosts()
                 conn = url.openConnection() as HttpURLConnection
                 conn.readTimeout = 5000
                 conn!!.connectTimeout = 5000
                 conn.requestMethod = "GET"
-//                conn.addRequestProperty("ServiceKey", "")
+//                conn.addRequestProperty("serviceKey", BuildConfig.WEATHER_KEY)
 //                conn.addRequestProperty("pageNo", "1")
 //                conn.addRequestProperty("numOfRows", "1000")
 //                conn.addRequestProperty("dataType", "JSON")
@@ -218,7 +230,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
     }
 
-
     private fun trustAllHosts() {
         val trustAllCerts = arrayOf<TrustManager>(
             object : X509TrustManager {
@@ -243,52 +254,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             print(e.stackTrace)
         }
     }
-    fun getWeatherInfo(latitude: Double, longitude: Double) : Flow<String> {
 
-        return callbackFlow {
-            val `is`: InputStream? = null
-            var conn: HttpURLConnection? = null
-            val sb = StringBuilder()
-            var nRes = -1
-//            val url = URL(BuildConfig.WEATHER_API)
-            val url = URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=yb1vVjpJ7ztUOk%2F1ze%2FsH9%2BtMLx1zw8M7FMGix0pTlVJFArMv2bpBnVB%2Fwe8QX5JuJmUO%2BAxS1zDoM9u5%2BmxTw%3D%3D&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127")
-
-            conn = url.openConnection() as HttpURLConnection
-            conn.readTimeout = 5000
-            conn!!.connectTimeout = 5000
-            conn.requestMethod = "GET"
-            conn.connect()
-            nRes = conn.responseCode
-            if (nRes != HttpURLConnection.HTTP_OK) throw HttpRetryException(
-                conn.responseMessage, nRes
-            )
-            var line: String? = ""
-            val br = BufferedReader(
-                InputStreamReader(
-                    conn.inputStream
-                )
-            )
-            while (br.readLine().also { line = it } != null) sb.append(line)
-
-            try {
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                if (`is` != null) {
-                    try {
-                        `is`.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-                conn?.disconnect()
-
-                var ret = if (nRes > 0) sb.toString() else ""
-                Snackbar.make(findViewById(R.id.activity_main), "Weather Info\n\n${ret}", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-            }
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -372,6 +338,20 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Log.d("CardStackView", "onCardDisappeared: ($position) ${textView.text}")
     }
 
+    private fun addLast(size: Int, item: CardItem) {
+        val old = adapter.getCards()
+        val new = mutableListOf<CardItem>().apply {
+            addAll(old)
+            addAll(List(size) { item })
+        }
+        val callback = CardDiffCallback(old, new)
+        val result = DiffUtil.calculateDiff(callback)
+        adapter.setCards(new)
+        result.dispatchUpdatesTo(adapter)
+    }
+
+
+    ////////////////////////////////////// Not Being Used
     //--CARD MODIFICATION
     private fun paginate() {
         val old = adapter.getCards()
@@ -409,17 +389,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun addLast(size: Int, item: CardItem) {
-        val old = adapter.getCards()
-        val new = mutableListOf<CardItem>().apply {
-            addAll(old)
-            addAll(List(size) { item })
-        }
-        val callback = CardDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setCards(new)
-        result.dispatchUpdatesTo(adapter)
-    }
 
     private fun removeFirst(size: Int) {
         if (adapter.getCards().isEmpty()) {
@@ -498,9 +467,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createCardItems(): List<CardItem> {
         val CardItems = ArrayList<CardItem>()
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
-        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_TEXT1))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
+        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
 //        CardItems.add(CardItem(name = "Yasaka Shrine", city = "Kyoto", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
 //        CardItems.add(CardItem(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
 //        CardItems.add(CardItem(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
@@ -513,5 +482,50 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 //        CardItems.add(CardItem(name = "Great Wall of China", city = "China", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
         return CardItems
     }
+    fun getWeatherInfo(latitude: Double, longitude: Double) : Flow<String> {
 
+        return callbackFlow {
+            val `is`: InputStream? = null
+            var conn: HttpURLConnection? = null
+            val sb = StringBuilder()
+            var nRes = -1
+//            val url = URL(BuildConfig.WEATHER_API)
+            val url = URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=yb1vVjpJ7ztUOk%2F1ze%2FsH9%2BtMLx1zw8M7FMGix0pTlVJFArMv2bpBnVB%2Fwe8QX5JuJmUO%2BAxS1zDoM9u5%2BmxTw%3D%3D&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127")
+
+            conn = url.openConnection() as HttpURLConnection
+            conn.readTimeout = 5000
+            conn!!.connectTimeout = 5000
+            conn.requestMethod = "GET"
+            conn.connect()
+            nRes = conn.responseCode
+            if (nRes != HttpURLConnection.HTTP_OK) throw HttpRetryException(
+                    conn.responseMessage, nRes
+            )
+            var line: String? = ""
+            val br = BufferedReader(
+                    InputStreamReader(
+                            conn.inputStream
+                    )
+            )
+            while (br.readLine().also { line = it } != null) sb.append(line)
+
+            try {
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                if (`is` != null) {
+                    try {
+                        `is`.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+                conn?.disconnect()
+
+                var ret = if (nRes > 0) sb.toString() else ""
+                Snackbar.make(findViewById(R.id.activity_main), "Weather Info\n\n${ret}", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+            }
+        }
+    }
 }
