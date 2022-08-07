@@ -15,8 +15,7 @@ data class CardItem (
 
     // TEXT TYPE1 CARD (WEATHER INFO)
     var coloridx: Int = Random.nextInt(7),
-    var info1: String = "",
-    var info2: String = "",
+    var weatherInfo: WeatherConst? = null,
 
     ) {
     companion object {

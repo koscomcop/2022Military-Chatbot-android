@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -36,6 +38,8 @@ import java.net.URL
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.net.ssl.*
 
@@ -145,16 +149,20 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 try {
                     val objectMapper = ObjectMapper()
                     val retNode = objectMapper.readTree(string)
-                    val weatherInfo = retNode["response"]["body"]["items"]["item"] as ArrayNode
-                    var prettyMessage = ""
 
-                    for (item:JsonNode in weatherInfo) {
-                        prettyMessage += String.format("[%s] %s\n", getJsonData(item, "category"), getJsonData(item, "obsrValue"))
+                    if(retNode["response"]["header"]["resultCode"].textValue().equals(WeatherConst().NORMAL_SERVICE)) {
+                        val nodes = retNode["response"]["body"]["items"]["item"] as ArrayNode
+                        var weatherConst: WeatherConst = WeatherConst()
+                        var prettyMessage = ""
+
+                        for (item:JsonNode in nodes) {
+                            weatherConst.CODES[getJsonData(item, "category")] = getJsonData(item, "fcstValue")
+                            prettyMessage += String.format("[%s] %s\n", getJsonData(item, "category"), getJsonData(item, "fcstValue"))
+                        }
+
+                        addLast(1, CardItem(name = "기상정보", weatherInfo = weatherConst, cardtype = CardType.CARD_TEXT1)
+                        )
                     }
-
-                    addLast(1, CardItem(name = "기상정보", info1 = "<오늘의 날씨 요약>", info2 = prettyMessage, cardtype = CardType.CARD_TEXT1)
-                    )
-
                 } catch (e: JsonProcessingException) {
                     e.printStackTrace()
                 }
@@ -165,6 +173,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             return node[key].asText()
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun doInBackground(vararg params: Double?): String? {
             var conn: HttpURLConnection? = null
             val `is`: InputStream? = null
@@ -173,33 +182,24 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             try {
                 val latitude = params[0]?.toInt()
                 val longitude = params[1]?.toInt()
-//                val url = URL("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=yb1vVjpJ7ztUOk%2F1ze%2FsH9%2BtMLx1zw8M7FMGix0pTlVJFArMv2bpBnVB%2Fwe8QX5JuJmUO%2BAxS1zDoM9u5%2BmxTw%3D%3D&pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127")
+                val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
                 val url = URL(Uri.parse(BuildConfig.WEATHER_API).buildUpon()
                         .appendQueryParameter("serviceKey", BuildConfig.WEATHER_KEY)
                         .appendQueryParameter("pageNo", "1")
                         .appendQueryParameter("numOfRows", "1000")
                         .appendQueryParameter("dataType", "JSON")
-                        .appendQueryParameter("base_date", "20220804")
-                        .appendQueryParameter("base_time", "0600")
+                        .appendQueryParameter("base_date", today)
+                        .appendQueryParameter("base_time", "0500")
                         .appendQueryParameter("nx", latitude.toString())
                         .appendQueryParameter("ny", longitude.toString())
                         .build().toString())
 
 
-                // serviceKey=yb1v pageNo=1&numOfRows=1000&dataType=JSON&base_date=20220803&base_time=0600&nx=55&ny=127
                 trustAllHosts()
                 conn = url.openConnection() as HttpURLConnection
                 conn.readTimeout = 5000
                 conn!!.connectTimeout = 5000
                 conn.requestMethod = "GET"
-//                conn.addRequestProperty("serviceKey", BuildConfig.WEATHER_KEY)
-//                conn.addRequestProperty("pageNo", "1")
-//                conn.addRequestProperty("numOfRows", "1000")
-//                conn.addRequestProperty("dataType", "JSON")
-//                conn.addRequestProperty("base_date", "20220803")
-//                conn.addRequestProperty("base_time", "0600")
-//                conn.addRequestProperty("nx", latitude.toString())
-//                conn.addRequestProperty("ny", longitude.toString())
 
 
                 conn.connect()
@@ -452,10 +452,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun addCardItem(item:CardItem) {
-
-    }
-
     //--SAMPLE CARD DATAS
     private fun createCardItem(): CardItem {
         return CardItem(
@@ -470,16 +466,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
         CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
         CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800", cardtype = CardType.CARD_IMAGE_FULL))
-//        CardItems.add(CardItem(name = "Yasaka Shrine", city = "Kyoto", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
-//        CardItems.add(CardItem(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
-//        CardItems.add(CardItem(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
-//        CardItems.add(CardItem(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
-//        CardItems.add(CardItem(name = "Empire State Building", city = "New York", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
-//        CardItems.add(CardItem(name = "The statue of Liberty", city = "New York", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
-//        CardItems.add(CardItem(name = "Louvre Museum", city = "Paris", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
-//        CardItems.add(CardItem(name = "Eiffel Tower", city = "Paris", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
-//        CardItems.add(CardItem(name = "Big Ben", city = "London", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
-//        CardItems.add(CardItem(name = "Great Wall of China", city = "China", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
         return CardItems
     }
     fun getWeatherInfo(latitude: Double, longitude: Double) : Flow<String> {
