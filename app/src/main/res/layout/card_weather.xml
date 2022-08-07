@@ -33,8 +33,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:text="날씨예보 요약"
                 android:textColor="@android:color/white"
                 android:textSize="26sp"/>
+
+            <TextView
+                android:id="@+id/item_name2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="* 당일 05시 발표 기상청 단기예보 기준"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"/>
 
         </LinearLayout>
 
@@ -45,22 +54,220 @@
             android:layout_below="@+id/item_title"
             android:padding="30dp"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/item_info1"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing_middle"
+                android:paddingRight="@dimen/spacing_middle"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/weather_img1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/weather1"/>
+                    <TextView
+                        android:id="@+id/weather_sky"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="정보없음"
+                        android:textSize="18sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_mlarge"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="일 최저 "
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:id="@+id/weather_tmn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="22"
+                            android:textColor="#0000FF"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" / 최고 "
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:id="@+id/weather_tmx"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#FF0000"
+                            android:text="22"
+                            android:textSize="16sp"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/weather_tmp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:fontFamily="sans-serif-thin"
+                        android:text="1시간 기온 -"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/weather_pcp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:fontFamily="sans-serif-thin"
+                        android:text="1시간 강수량 - (강수없음)"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/weather_sno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:fontFamily="sans-serif-thin"
+                        android:text="1시간 신적설 - (적설없음)"
+                        android:textSize="14sp"/>
 
-            <TextView
-                android:id="@+id/item_info2"
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-thin"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:padding="@dimen/spacing_medium"
+                android:background="@color/grey_alpha">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="강수형태"/>
+                <TextView
+                    android:id="@+id/weather_pty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="-"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:padding="@dimen/spacing_medium">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="강수확률"/>
+                <TextView
+                    android:id="@+id/weather_pop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="-"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:background="@color/grey_alpha"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_middle"
+                android:paddingRight="@dimen/spacing_middle"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/weather_img2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/weather1"/>
+                    <TextView
+                        android:id="@+id/weather_vec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_middle"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:textAlignment="center"
+                        android:text="풍향 -"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/weather_wsd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_medium"
+                        android:textAlignment="center"
+                        android:text="풍속 -"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey_alpha"
+                    android:layout_marginLeft="@dimen/spacing_xlarge"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_large"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/weather_uuu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-thin"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="풍속(동서) -"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/weather_vvv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-thin"
+                        android:text="풍속(남북) -"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/weather_wav"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-thin"
+                        android:text="파고 -"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/weather_reh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFF00"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="습도 -"
+                        android:textAlignment="center"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
     </RelativeLayout>
