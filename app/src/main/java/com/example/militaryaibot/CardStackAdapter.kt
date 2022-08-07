@@ -1,6 +1,9 @@
 package com.example.militaryaibot
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,14 +41,18 @@ class CardStackAdapter(
             CardType.CARD_IMAGE_FULL -> {
                 var curholder = holder as CardImageViewHolder
 
-                curholder.name.text = "${curcard.id}. ${curcard.name}"
+                curholder.name.text = "${curcard.name}"
                 curholder.city.text = curcard.city
-                Glide.with(curholder.image)
-                    .load(curcard.url)
-                    .into(curholder.image)
-                curholder.itemView.setOnClickListener { v ->
-                    Toast.makeText(v.context, curcard.name, Toast.LENGTH_SHORT).show()
+
+                //ADD IMAGE CLICK LISTENER
+                curholder.image.setOnClickListener { v ->
+                    var browser = Intent(Intent.ACTION_VIEW)
+                    browser.setData(Uri.parse(curcard.url))
+                    v.context.startActivity(browser)
+
                 }
+
+                curholder.image.setImageResource(R.drawable.wordcloud_sample)
             }
             CardType.CARD_TEXT1 -> {
                 var curholder = holder as CardText1ViewHolder
