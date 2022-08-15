@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     //--MEMBER VARIABLES
     private var toolbar: Toolbar? = null
-    private var cardcount: TextView? = null
+//    private var cardcount: TextView? = null
 
     //--CARD STACK ADAPTER
     private val cardStackView by lazy { findViewById<CardStackView>(R.id.card_stack_view) }
@@ -65,10 +65,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setContentView(R.layout.activity_main)
 
         toolbar = findViewById<Toolbar>(R.id.toolbar)
-        cardcount = findViewById(R.id.card_count)
 
         setSupportActionBar(toolbar)
-        cardcount?.setText("0")
 
         //--ADD LISTENERS
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
@@ -197,8 +195,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
                 trustAllHosts()
                 conn = url.openConnection() as HttpURLConnection
-                conn.readTimeout = 5000
-                conn!!.connectTimeout = 5000
+                conn.readTimeout = 15000
+                conn!!.connectTimeout = 15000
                 conn.requestMethod = "GET"
 
 
@@ -256,22 +254,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     //--CARD EVENTS
     override fun onCardDragging(direction: Direction, ratio: Float) {
         Log.d("CardStackView", "onCardDragging: d = ${direction.name}, r = $ratio")
@@ -301,7 +283,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         adapter.setCards(new)
 
         //--UPDATE CARD COUNT
-        cardcount?.setText("${new[0].id}/${adapter.itemCount}")
+//        cardcount?.setText("${new[0].id}/${adapter.itemCount}")
 
         adapter.notifyDataSetChanged()
 
@@ -361,7 +343,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         adapter.setCards(new)
 
         //--UPDATE CARD COUNT
-        cardcount?.setText("${adapter.itemCount}/${callback.newListSize}")
+//        cardcount?.setText("${adapter.itemCount}/${callback.newListSize}")
 
         result.dispatchUpdatesTo(adapter)
     }

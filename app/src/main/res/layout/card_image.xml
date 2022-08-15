@@ -15,8 +15,8 @@
         android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
+        android:src="@drawable/loading"
+        android:scaleType="fitCenter"
         android:layout_marginBottom="@dimen/drag_dismiss_distance"
         app:riv_corner_radius="8dp"/>
 

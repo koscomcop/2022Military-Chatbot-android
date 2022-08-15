@@ -52,7 +52,11 @@ class CardStackAdapter(
 
                 }
 
-                curholder.image.setImageResource(R.drawable.wordcloud_sample)
+                //SET IMAGE SOURCE
+                Glide.with(curholder.image)
+                        .load("http://221.168.37.9:8000/get_image?type=1")
+                        .into(curholder.image)
+
             }
             CardType.CARD_TEXT1 -> {
                 var curholder = holder as CardText1ViewHolder
@@ -90,7 +94,7 @@ class CardStackAdapter(
                         infos["TMX"].toString().split(".")[0]
                     }°C")
                     curholder.tmp.setText("1시간 기온 ${infos["TMP"]}°C")
-                    if(infos["PCP"] != "강수없음") curholder.pcp.setText("1시간 강수량 ${infos["PCP"]}mm")
+                    if(infos["PCP"] != "강수없음") curholder.pcp.setText("1시간 강수량 ${infos["PCP"]}")
                     if(infos["SNO"] != "적설없음") curholder.sno.setText("1시간 신적설 ${infos["SNO"]}")
 
                     curholder.pty.setText(weatherConst.pty_detail[infos["PTY"]])
