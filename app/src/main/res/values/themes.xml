@@ -22,6 +22,4 @@
     <style name="Theme.MilitaryAIBot.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.MilitaryAIBot.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
-
 </resources>

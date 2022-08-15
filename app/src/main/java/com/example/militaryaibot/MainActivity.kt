@@ -13,10 +13,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -25,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.yuyakaido.android.cardstackview.*
 import kotlinx.coroutines.flow.*
@@ -42,6 +47,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.net.ssl.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -52,6 +58,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var longitude: Double? = 0.0
 
     //--MEMBER VARIABLES
+    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private var toolbar: Toolbar? = null
 //    private var cardcount: TextView? = null
 
@@ -93,10 +100,45 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             }
         }
 
+        //--SET UP NAVIGATION
+        val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
+        setupNavigation(db)
+
         //--GET STORAGE PERMISSION
         permissionsHelper = PermissionsHelper(applicationContext, this)
         RequestRuntimePermissions()
     }
+
+    private fun setupNavigation(dbDao: MilDictDao?) {
+        // Toolbar
+//        val toolbar = findViewById<Toolbar>(com.yuyakaido.android.cardstackview.R.id.toolbar)
+//        setSupportActionBar(toolbar)
+
+        // DrawerLayout
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
+        actionBarDrawerToggle.syncState()
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+
+        // ListView
+        val drawerContent = findViewById<ListView>(R.id.drawer_content)
+        val dictAdapter:DictAdapter = DictAdapter()
+        drawerContent.adapter = dictAdapter
+
+        //--LOAD DATABASE
+        var r = Runnable {
+            val words = dbDao?.loadAllWords()
+            if (words != null) {
+                for (w in words) {
+                    dictAdapter.addItem(DictItem(w))
+                }
+                dictAdapter.notifyDataSetChanged()
+            }
+        }
+        val thread = Thread(r)
+        thread.start()
+
+    }
+
 
     // WRITE_EXTERNAL_STORAGE 권한 사용
     private fun RequestRuntimePermissions() {
