@@ -6,6 +6,7 @@ data class DictItem (
 
     // COMMON VARIABLES
     val word: String,
+    var desc: String = ""
 
     ) {
     companion object {

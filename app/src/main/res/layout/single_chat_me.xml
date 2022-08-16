@@ -18,7 +18,7 @@
         android:paddingBottom="10dp"
         android:layout_alignParentRight="true"
         android:background="@drawable/theme_chatroom_bubble_me_01_image"
-        android:textSize="15dp"
+        android:textSize="12dp"
         android:textAlignment="center"
         android:text="TextView"/>
 
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
-        android:textSize="15dp"
+        android:textSize="10sp"
         android:text="time"
         android:layout_alignBottom="@+id/chat_text_me"
         android:layout_toLeftOf="@id/chat_text_me"/>
@@ -35,9 +35,10 @@
 
     <ImageView
         android:id="@+id/chat_favorite_me"
-        android:src="@android:drawable/checkbox_on_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@android:drawable/star_big_on"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginRight="@dimen/spacing_medium"
         android:layout_alignBottom="@+id/chat_text_me"
         android:layout_toLeftOf="@id/chat_time_me"/>
 

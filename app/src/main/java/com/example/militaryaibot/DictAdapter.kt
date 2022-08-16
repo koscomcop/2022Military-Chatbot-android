@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.core.view.isVisible
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,7 +30,17 @@ class DictAdapter: BaseAdapter() {
         val view: View = LayoutInflater.from(context).inflate(R.layout.list_item1, parent, false)
 
         val word: TextView? = view?.findViewById(R.id.word)
-        word?.setText(words.get(position).word)
+        val description: TextView? = view?.findViewById(R.id.description)
+
+        val curword = words.get(position)
+        word?.setText(curword.word)
+        if (curword.desc != "") {
+            description?.setText(curword.desc)
+            description?.visibility = View.VISIBLE
+        }
+        else {
+            description?.visibility = View.GONE
+        }
 
         return view
     }

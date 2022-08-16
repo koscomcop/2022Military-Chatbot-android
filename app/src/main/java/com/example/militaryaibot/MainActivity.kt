@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var longitude: Double? = 0.0
 
     //--MEMBER VARIABLES
-    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private var toolbar: Toolbar? = null
 //    private var cardcount: TextView? = null
 
@@ -100,45 +99,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             }
         }
 
-        //--SET UP NAVIGATION
-        val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
-        setupNavigation(db)
-
         //--GET STORAGE PERMISSION
         permissionsHelper = PermissionsHelper(applicationContext, this)
         RequestRuntimePermissions()
     }
-
-    private fun setupNavigation(dbDao: MilDictDao?) {
-        // Toolbar
-//        val toolbar = findViewById<Toolbar>(com.yuyakaido.android.cardstackview.R.id.toolbar)
-//        setSupportActionBar(toolbar)
-
-        // DrawerLayout
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
-        actionBarDrawerToggle.syncState()
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-
-        // ListView
-        val drawerContent = findViewById<ListView>(R.id.drawer_content)
-        val dictAdapter:DictAdapter = DictAdapter()
-        drawerContent.adapter = dictAdapter
-
-        //--LOAD DATABASE
-        var r = Runnable {
-            val words = dbDao?.loadAllWords()
-            if (words != null) {
-                for (w in words) {
-                    dictAdapter.addItem(DictItem(w))
-                }
-                dictAdapter.notifyDataSetChanged()
-            }
-        }
-        val thread = Thread(r)
-        thread.start()
-
-    }
-
 
     // WRITE_EXTERNAL_STORAGE 권한 사용
     private fun RequestRuntimePermissions() {

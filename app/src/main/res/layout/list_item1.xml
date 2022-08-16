@@ -14,4 +14,10 @@
             android:textAlignment="center"
             android:id="@+id/word"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:id="@+id/description"/>
 </LinearLayout>

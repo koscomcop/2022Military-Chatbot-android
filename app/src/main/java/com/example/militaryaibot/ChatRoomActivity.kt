@@ -1,17 +1,18 @@
 package com.example.militaryaibot
 
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -25,6 +26,8 @@ import java.net.HttpRetryException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -45,18 +48,23 @@ class ChatRoomActivity : AppCompatActivity() {
     private var mChatSendBtn: ImageButton? = null
     private var mChatMsgAdapter: ChatMsgAdapter? = null
     private var mFavChatMsgAdapter: ChatMsgAdapter? = null
+    private var toolbar : Toolbar? = null
+    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
 
     //--CHAT ROOM INFO--
-    private val chatRoomTitle = "My Chatroom"
+    private val chatRoomTitle = "AI Chatbot"
     private val chatMsgs: MutableList<ChatMessage> = ArrayList<ChatMessage>()
     private val favoritedMsgs: MutableList<ChatMessage> = ArrayList<ChatMessage>()
     private val chatDate = "2021-08-21"
     private val totUserNum = 2
     private var isFavoriteEnabled = false
+    private var words: Array<String>? = null
 
     //--USER INFO--
     private val chatUsers: List<ChatUser> = ArrayList<ChatUser>()
     private var me: ChatUser? = null
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -66,12 +74,13 @@ class ChatRoomActivity : AppCompatActivity() {
         mChatMsgTxt = findViewById<View>(R.id.chatMessage) as EditText
 
         //--ADD CUSTOM APP BAR--
-        val toolbar = findViewById<View>(R.id.main_app_bar) as Toolbar
+        toolbar = findViewById<View>(R.id.main_app_bar) as Toolbar
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar!!.setDisplayShowTitleEnabled(false)
+        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 (E)").withLocale(Locale.forLanguageTag("ko")))
         mChatTitleTxt!!.text = chatRoomTitle
-        mChatDateTxt!!.text = chatDate
+        mChatDateTxt!!.text = today
 
         //--GET DEVICE INFO
         val displayMetrics = DisplayMetrics()
@@ -86,6 +95,12 @@ class ChatRoomActivity : AppCompatActivity() {
         mLinearLayoutManager = LinearLayoutManager(this@ChatRoomActivity)
         mChatMsgView!!.layoutManager = mLinearLayoutManager
         mChatMsgView!!.adapter = mChatMsgAdapter
+
+        //--SET UP NAVIGATION
+        if (words == null) {
+            val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
+            setupNavigation(db)
+        }
 
         //--SEND MESSAGE EVENT LISTENER
         mChatSendBtn!!.setOnClickListener(View.OnClickListener {
@@ -117,6 +132,58 @@ class ChatRoomActivity : AppCompatActivity() {
 
     //        loadStoredChat()
 
+    }
+
+    private fun setupNavigation(dbDao: MilDictDao?) {
+        // Toolbar
+//        val toolbar = findViewById<Toolbar>(com.yuyakaido.android.cardstackview.R.id.toolbar)
+//        setSupportActionBar(toolbar)
+
+        // DrawerLayout
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
+        actionBarDrawerToggle.syncState()
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+
+        //--LOAD DATABASE
+        var r = Runnable {
+            words = dbDao?.loadAllWords()
+            addWords()
+        }
+        val thread = Thread(r)
+        thread.start()
+
+    }
+
+    //--INIT DICTIONARY
+    fun addWords() {
+        val dictAdapter:DictAdapter = DictAdapter()
+
+        // ListView
+        val drawerContent = findViewById<ListView>(R.id.drawer_content)
+        drawerContent.adapter = dictAdapter
+        drawerContent.setOnItemClickListener { parent, view, position, id ->
+            val itm = parent.getItemAtPosition(position) as DictItem
+            if (itm.desc == "") {
+                val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
+                var r = Runnable {
+                    itm.desc = db?.getDescWithWord(itm.word).toString()
+                }
+                val thread = Thread(r)
+                thread.start()
+            }
+            else {
+                itm.desc = ""
+            }
+            dictAdapter.notifyDataSetChanged()
+
+        }
+
+        if (words != null) {
+            for (w in words!!) {
+                dictAdapter.addItem(DictItem(w))
+            }
+            dictAdapter.notifyDataSetChanged()
+        }
     }
 
     //--ADD CHAT MESSAGE--
