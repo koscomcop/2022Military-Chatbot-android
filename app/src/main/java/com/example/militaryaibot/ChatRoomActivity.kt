@@ -1,5 +1,6 @@
 package com.example.militaryaibot
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +21,10 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.*
 import java.net.HttpRetryException
@@ -49,16 +54,14 @@ class ChatRoomActivity : AppCompatActivity() {
     private var mChatMsgAdapter: ChatMsgAdapter? = null
     private var mFavChatMsgAdapter: ChatMsgAdapter? = null
     private var toolbar : Toolbar? = null
-    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
 
     //--CHAT ROOM INFO--
-    private val chatRoomTitle = "AI Chatbot"
+    private val chatRoomTitle = "Hello ArBot"
     private val chatMsgs: MutableList<ChatMessage> = ArrayList<ChatMessage>()
     private val favoritedMsgs: MutableList<ChatMessage> = ArrayList<ChatMessage>()
     private val chatDate = "2021-08-21"
     private val totUserNum = 2
     private var isFavoriteEnabled = false
-    private var words: Array<String>? = null
 
     //--USER INFO--
     private val chatUsers: List<ChatUser> = ArrayList<ChatUser>()
@@ -96,12 +99,6 @@ class ChatRoomActivity : AppCompatActivity() {
         mChatMsgView!!.layoutManager = mLinearLayoutManager
         mChatMsgView!!.adapter = mChatMsgAdapter
 
-        //--SET UP NAVIGATION
-        if (words == null) {
-            val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
-            setupNavigation(db)
-        }
-
         //--SEND MESSAGE EVENT LISTENER
         mChatSendBtn!!.setOnClickListener(View.OnClickListener {
             val message = mChatMsgTxt!!.text.toString()
@@ -128,63 +125,59 @@ class ChatRoomActivity : AppCompatActivity() {
         if (!backupDir.exists()) backupDir.mkdir()
 
         //--ADD GREETING MESSAGE
-        addReply("Hello world")
+        addReply(resources.getString(R.string.greeting_msg))
 
     //        loadStoredChat()
 
     }
 
-    private fun setupNavigation(dbDao: MilDictDao?) {
+    private fun setupNavigation() {
         // Toolbar
 //        val toolbar = findViewById<Toolbar>(com.yuyakaido.android.cardstackview.R.id.toolbar)
 //        setSupportActionBar(toolbar)
 
         // DrawerLayout
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
-        actionBarDrawerToggle.syncState()
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-
-        //--LOAD DATABASE
-        var r = Runnable {
-            words = dbDao?.loadAllWords()
-            addWords()
-        }
-        val thread = Thread(r)
-        thread.start()
+//        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
+//        actionBarDrawerToggle.syncState()
+//        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+//        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+//        val dictAdapter:DictAdapter = DictAdapter()
+//
+//        // ListView
+//        val drawerContent = findViewById<ListView>(R.id.drawer_content)
+//        drawerContent.adapter = dictAdapter
+//        drawerContent.setOnItemClickListener { parent, view, position, id ->
+//            CoroutineScope(Dispatchers.Main).launch {
+//                val itm = parent.getItemAtPosition(position) as DictItem
+//                if (itm.desc == "") {
+//                    val db: MilDictDao? = MilDictDB.getInstance(parent.context)?.mildictDao()
+//                    withContext(Dispatchers.IO) {
+//                        itm.desc = db?.getDescWithWord(itm.word).toString()
+//                    }
+//                }
+//                else {
+//                    itm.desc = ""
+//                }
+//                dictAdapter.notifyDataSetChanged()
+//            }
+//        }
+//
+//        //--LOAD DATABASE
+//        CoroutineScope(Dispatchers.Main).launch {
+//            withContext(Dispatchers.IO) {
+//                words = dbDao?.loadAllWords()
+//            }
+//
+//            if (words != null) {
+//                for (w in words!!) {
+//                    dictAdapter.addItem(DictItem(w))
+//                }
+//            }
+//            dictAdapter.notifyDataSetChanged()
+//        }
 
     }
 
-    //--INIT DICTIONARY
-    fun addWords() {
-        val dictAdapter:DictAdapter = DictAdapter()
-
-        // ListView
-        val drawerContent = findViewById<ListView>(R.id.drawer_content)
-        drawerContent.adapter = dictAdapter
-        drawerContent.setOnItemClickListener { parent, view, position, id ->
-            val itm = parent.getItemAtPosition(position) as DictItem
-            if (itm.desc == "") {
-                val db: MilDictDao? = MilDictDB.getInstance(this)?.mildictDao()
-                var r = Runnable {
-                    itm.desc = db?.getDescWithWord(itm.word).toString()
-                }
-                val thread = Thread(r)
-                thread.start()
-            }
-            else {
-                itm.desc = ""
-            }
-            dictAdapter.notifyDataSetChanged()
-
-        }
-
-        if (words != null) {
-            for (w in words!!) {
-                dictAdapter.addItem(DictItem(w))
-            }
-            dictAdapter.notifyDataSetChanged()
-        }
-    }
 
     //--ADD CHAT MESSAGE--
     fun addReply(message: String?) {
@@ -397,6 +390,11 @@ class ChatRoomActivity : AppCompatActivity() {
                     false
                 ) else mChatMsgView!!.swapAdapter(mChatMsgAdapter, false)
                 isFavoriteEnabled = !isFavoriteEnabled
+                true
+            }
+            R.id.action_search -> {
+                //--SHOW DICT VIEW--
+                startActivity(Intent(this, DictActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

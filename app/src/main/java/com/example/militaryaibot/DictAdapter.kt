@@ -25,6 +25,10 @@ class DictAdapter: BaseAdapter() {
         return position.toLong()
     }
 
+    fun getItemPos(itm: DictItem): Int {
+        return words.indexOf(itm)
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val context: Context? = parent?.context
         val view: View = LayoutInflater.from(context).inflate(R.layout.list_item1, parent, false)

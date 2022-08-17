@@ -7,17 +7,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_middle"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingLeft="@dimen/spacing_medium"
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="center"
+            android:textAlignment="viewStart"
+            android:textSize="20sp"
             android:id="@+id/word"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+        android:padding="@dimen/spacing_middle"
+        android:textAlignment="viewStart"
+        android:textSize="15sp"
         android:visibility="gone"
         android:id="@+id/description"/>
 </LinearLayout>
