@@ -32,6 +32,15 @@
         android:id="@+id/content_main"
         layout="@layout/content_main" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/img_license"
+        android:textSize="9sp"
+        android:textColor="@color/grey_alpha"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/spacing_middle"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

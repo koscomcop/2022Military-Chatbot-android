@@ -24,4 +24,5 @@
     <color name="r2Primary">#255A61</color>
     <color name="r2PrimaryVariant">#1A4046</color>
     <color name="grey_alpha">#6Edddddd</color>
+    <color name="grey_alpha2">#25DDDDDD</color>
 </resources>

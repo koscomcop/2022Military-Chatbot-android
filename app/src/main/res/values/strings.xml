@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MilitaryAIBot</string>
+    <string name="app_name">ArBot</string>
 
     <!-- Android default -->
     <string name="action_settings">Settings</string>
@@ -10,5 +10,6 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
+    <string name="img_license">Dog cartoon vector created by catalyststuff - www.freepik.com</string>
     <string name="err_save_chat">메시지 저장에 실패했습니다</string>
 </resources>
