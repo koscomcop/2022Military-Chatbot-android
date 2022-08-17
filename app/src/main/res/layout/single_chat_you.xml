@@ -19,7 +19,7 @@
         android:layout_alignParentLeft="true"
         android:background="@drawable/theme_chatroom_bubble_you_01_image"
         android:textSize="12dp"
-        android:textAlignment="center"
+        android:textAlignment="viewStart"
         android:text="TextView"/>
 
     <TextView

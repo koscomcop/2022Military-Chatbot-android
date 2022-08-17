@@ -15,9 +15,10 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:title="@string/app_name"
+            app:title="Home"
             app:titleTextColor="@color/white"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.MilitaryAIBot" />
@@ -25,7 +26,7 @@
         <View
             android:background="@color/grey_alpha"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="2dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <include
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/img_license"
-        android:textSize="9sp"
+        android:textSize="12sp"
         android:textColor="@color/grey_alpha"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="@dimen/spacing_middle"/>

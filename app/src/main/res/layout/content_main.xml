@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/spacing_mlarge"
-            android:paddingBottom="150dp"
+            android:paddingBottom="100dp"
             android:paddingStart="@dimen/spacing_medium"
             android:paddingEnd="@dimen/spacing_medium"
             android:clipToPadding="false">

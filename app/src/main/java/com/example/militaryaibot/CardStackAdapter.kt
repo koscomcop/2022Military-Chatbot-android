@@ -102,6 +102,8 @@ class CardStackAdapter(
 
                     curholder.img2.setImageResource(R.drawable.arrow)
                     curholder.img2.rotation = infos["VEC"]?.toFloat()?:0.0f
+                    curholder.img2.scaleX = -1f
+                    curholder.img2.scaleY = -1f
                     curholder.vec.setText("풍향 ${infos["VEC"]}°")
                     curholder.wsd.setText("풍속 ${infos["WSD"]}m/s")
 
