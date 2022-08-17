@@ -19,7 +19,6 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".DictActivity"
-            android:label="@string/title_activity_dict"
             android:theme="@style/Theme.MilitaryAIBot.NoActionBar" />
         <activity
             android:name=".MainActivity"

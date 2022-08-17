@@ -13,15 +13,29 @@
         android:id="@+id/appbar"
         android:theme="@style/Theme.MilitaryAIBot">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            app:title="Home"
-            app:titleTextColor="@color/white"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.MilitaryAIBot" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:paddingTop="7dp"
+                android:paddingLeft="@dimen/spacing_middle"
+                android:layout_gravity="center"
+                app:riv_corner_radius="@dimen/spacing_large"
+                android:src="@drawable/icon"/>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:title="ArBot Home"
+                app:titleTextColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/Theme.MilitaryAIBot" />
+
+        </LinearLayout>
 
         <View
             android:background="@color/grey_alpha"
