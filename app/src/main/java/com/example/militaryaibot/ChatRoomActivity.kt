@@ -106,13 +106,13 @@ class ChatRoomActivity : AppCompatActivity() {
             val message = mChatMsgTxt!!.text.toString()
             if (message != "") {
                 addMessage(message)
-                RequestChatRpl().execute(BuildConfig.CHAT_SERVER, message)
+                if (message in arrayListOf<String>("식단", "도서", "주거", "복지", "급여", "정원")) addInfoReply(message)
+                else RequestChatRpl().execute(BuildConfig.CHAT_SERVER, message)
+
                 return@OnClickListener
             }
         })
-
         init()
-
     }
 
     fun init() {
@@ -140,6 +140,52 @@ class ChatRoomActivity : AppCompatActivity() {
     fun addReply(message: String?) {
         val now = nowTime
         val reply = ChatMessage(message, me, now, totUserNum)
+        reply.chatType = ChatType.ChatYou
+        chatMsgs.add(reply)
+        refreshChatView()
+    }
+
+    //--ADD INFORMATION REPLY MESSAGE--
+    fun addInfoReply(key: String) {
+        val now = nowTime
+        var desc = ""
+        var sample = ""
+        var keywords: MutableList<String> = mutableListOf()
+
+        when (key) {
+            "식단" -> {
+                desc = "부대별 식단정보"
+                keywords = mutableListOf("메뉴", "식단", "부대")
+                sample = "7321부대 점심메뉴 뭐야?"
+            }
+            "도서" -> {
+                desc = "군도서관 소장 도서/간행물 정보"
+                keywords = mutableListOf("저자", "도서")
+                sample = "저자 허지웅인 책 찾아줘"
+            }
+            "주거" -> {
+                desc = "군/지역별 군사주택(관사) 정보"
+                keywords = mutableListOf("관사")
+                sample = "과천 근처 해군이 관리하는 관사 있어?"
+            }
+            "복지" -> {
+                desc = "장병 복지/할인혜택 숙박정보"
+                keywords = mutableListOf("혜택", "놀데")
+                sample = "군인도 소노캄 혜택 있어?"
+            }
+            "급여" -> {
+                desc = "직급/호봉별 급여정보"
+                keywords = mutableListOf("급여", "월급")
+                sample = "공군 소령 3호봉 급여 궁금해"
+            }
+            "정원" -> {
+                desc = "군/직급별 인원 정보"
+                sample = "육군 부사관은 총 몇명이야?"
+            }
+        }
+
+        val msg = "[${key}] : ${desc}\n(키워드: ${keywords.joinToString(", ")})\n\n질문예시: ${sample}"
+        val reply = ChatMessage(msg, me, now, totUserNum)
         reply.chatType = ChatType.ChatYou
         chatMsgs.add(reply)
         refreshChatView()
