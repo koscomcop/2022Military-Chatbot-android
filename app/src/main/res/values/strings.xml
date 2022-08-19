@@ -10,7 +10,10 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
-    <string name="greeting_msg">국군 장병 맞춤형 인공지능 챗봇 아르봇입니다.\n무엇이든 물어보세요.</string>
+    <string name="greeting_msg">안녕하세요, 국군 장병 맞춤형 인공지능 챗봇 아르봇입니다.</string>
+    <string name="greeting_msg2">아르봇은 "식단, 도서, 주거, 복지, 급여, 정원"의\n군과 관련된 6가지 카테고리 질문에 대해 답하도록 학습되었습니다</string>
+    <string name="greeting_msg3">(!!)질문은 키워드를 포함해 명확하고 간결하게 물어볼수록 제가 더 잘 이해할 수 있어요(!!)</string>
+    <string name="greeting_msg4">카테고리별 질의 사용법 및 예시를 확인하려면\n채팅장에 카테고리명을 입력해주세요(ex.주거)</string>
 
     <string name="img_license">Dog cartoon vector created by catalyststuff - www.freepik.com</string>
     <string name="err_save_chat">메시지 저장에 실패했습니다</string>

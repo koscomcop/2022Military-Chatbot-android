@@ -41,6 +41,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private val objectMapper = ObjectMapper()
     private val fileExt = ".json"
+    private var progressDialog: ProgressDialog? = null
 
     private var chatAllMsgs: File? = null
     private val chatFavMsgs: File? = null
@@ -48,7 +49,7 @@ class ChatRoomActivity : AppCompatActivity() {
     private var mChatDateTxt: TextView? = null
     private var mChatMsgTxt: EditText? = null
     private var mChatMsgView: RecyclerView? = null
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
+//    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     private var mLinearLayoutManager: LinearLayoutManager? = null
     private var mChatSendBtn: ImageButton? = null
     private var mChatMsgAdapter: ChatMsgAdapter? = null
@@ -75,6 +76,7 @@ class ChatRoomActivity : AppCompatActivity() {
         mChatTitleTxt = findViewById<View>(R.id.chatTitle) as TextView
         mChatDateTxt = findViewById<View>(R.id.chatDate) as TextView
         mChatMsgTxt = findViewById<View>(R.id.chatMessage) as EditText
+        progressDialog = ProgressDialog(this)
 
         //--ADD CUSTOM APP BAR--
         toolbar = findViewById<View>(R.id.main_app_bar) as Toolbar
@@ -94,7 +96,7 @@ class ChatRoomActivity : AppCompatActivity() {
         mFavChatMsgAdapter =
             ChatMsgAdapter(favoritedMsgs)
         mChatMsgView = findViewById<View>(R.id.recycleViewMessageList) as RecyclerView
-        mSwipeRefreshLayout = findViewById<View>(R.id.message_swipe_layout) as SwipeRefreshLayout
+//        mSwipeRefreshLayout = findViewById<View>(R.id.message_swipe_layout) as SwipeRefreshLayout
         mLinearLayoutManager = LinearLayoutManager(this@ChatRoomActivity)
         mChatMsgView!!.layoutManager = mLinearLayoutManager
         mChatMsgView!!.adapter = mChatMsgAdapter
@@ -126,63 +128,28 @@ class ChatRoomActivity : AppCompatActivity() {
 
         //--ADD GREETING MESSAGE
         addReply(resources.getString(R.string.greeting_msg))
+        addReply(resources.getString(R.string.greeting_msg2))
+        addReply(resources.getString(R.string.greeting_msg3))
+        addReply(resources.getString(R.string.greeting_msg4))
 
     //        loadStoredChat()
 
     }
 
-    private fun setupNavigation() {
-        // Toolbar
-//        val toolbar = findViewById<Toolbar>(com.yuyakaido.android.cardstackview.R.id.toolbar)
-//        setSupportActionBar(toolbar)
-
-        // DrawerLayout
-//        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_app_bar_open_drawer_description, R.string.hello_first_fragment)
-//        actionBarDrawerToggle.syncState()
-//        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-//        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-//        val dictAdapter:DictAdapter = DictAdapter()
-//
-//        // ListView
-//        val drawerContent = findViewById<ListView>(R.id.drawer_content)
-//        drawerContent.adapter = dictAdapter
-//        drawerContent.setOnItemClickListener { parent, view, position, id ->
-//            CoroutineScope(Dispatchers.Main).launch {
-//                val itm = parent.getItemAtPosition(position) as DictItem
-//                if (itm.desc == "") {
-//                    val db: MilDictDao? = MilDictDB.getInstance(parent.context)?.mildictDao()
-//                    withContext(Dispatchers.IO) {
-//                        itm.desc = db?.getDescWithWord(itm.word).toString()
-//                    }
-//                }
-//                else {
-//                    itm.desc = ""
-//                }
-//                dictAdapter.notifyDataSetChanged()
-//            }
-//        }
-//
-//        //--LOAD DATABASE
-//        CoroutineScope(Dispatchers.Main).launch {
-//            withContext(Dispatchers.IO) {
-//                words = dbDao?.loadAllWords()
-//            }
-//
-//            if (words != null) {
-//                for (w in words!!) {
-//                    dictAdapter.addItem(DictItem(w))
-//                }
-//            }
-//            dictAdapter.notifyDataSetChanged()
-//        }
-
-    }
-
-
     //--ADD CHAT MESSAGE--
     fun addReply(message: String?) {
         val now = nowTime
         val reply = ChatMessage(message, me, now, totUserNum)
+        reply.chatType = ChatType.ChatYou
+        chatMsgs.add(reply)
+        refreshChatView()
+    }
+
+    //--ADD ERROR CHAT MESSAGE--
+    fun addErrReply(code: String) {
+        val now = nowTime
+        val errmsg = "죄송해요 답변을 찾지 못했어요(${code})"
+        val reply = ChatMessage(errmsg, me, now, totUserNum)
         reply.chatType = ChatType.ChatYou
         chatMsgs.add(reply)
         refreshChatView()
@@ -231,7 +198,7 @@ class ChatRoomActivity : AppCompatActivity() {
     fun refreshChatView() {
         mChatMsgAdapter?.notifyDataSetChanged()
         mChatMsgView!!.scrollToPosition(chatMsgs.size - 1)
-        mSwipeRefreshLayout!!.isRefreshing = false
+//        mSwipeRefreshLayout!!.isRefreshing = false
     }
 
     //--GET STORED CHAT MESSAGES--
@@ -294,9 +261,14 @@ class ChatRoomActivity : AppCompatActivity() {
     //--REQUEST RANDOM USER--
     internal inner class RequestChatRpl :
         AsyncTask<String?, Void?, String>() {
+        override fun onPreExecute() {
+            progressDialog?.show()
+        }
+
         override fun onPostExecute(string: String) {
             super.onPostExecute(string)
-            if (string != "") {
+            val ret = string.toIntOrNull()
+            if (string != "" && ret == null) {
                 try {
                     val retNode = objectMapper.readTree(string)
                     val response = retNode["outputs"] as ObjectNode
@@ -305,6 +277,10 @@ class ChatRoomActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
+            else {
+                addErrReply(string)
+            }
+            progressDialog?.dismiss()
         }
 
         private fun getJsonData(node: JsonNode, key: String): String {
@@ -323,6 +299,8 @@ class ChatRoomActivity : AppCompatActivity() {
                 conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.connectTimeout = 15000
+                conn.readTimeout = 15000
                 conn.doOutput = true
                 conn.doInput = true
 
@@ -352,7 +330,7 @@ class ChatRoomActivity : AppCompatActivity() {
                     }
                 }
                 conn?.disconnect()
-                return if (nRes > 0) sb.toString() else ""
+                return if (nRes == HttpURLConnection.HTTP_OK) sb.toString() else nRes.toString()
             }
         }
     }
