@@ -230,15 +230,20 @@ class ChatRoomActivity : AppCompatActivity() {
     }
 
     //--SET FAVORITE / UNFAVORITE--
-    fun favoriteMessage(pos: Int, favorite: Boolean) {
+    fun favoriteMessage(pos: Int) {
         val newMsg: ChatMessage = chatMsgs[pos]
+        val favorite: Boolean = !newMsg.isFavorited
+
         if (newMsg.setFavorite(favorite)) {
             //--DATA ACTUALLY CHANGED--
             chatMsgs[pos] = newMsg
             favoritedMsgs.add(newMsg)
-            Collections.sort(favoritedMsgs)
         }
-        refreshChatView()
+        else {
+            favoritedMsgs.remove(newMsg)
+        }
+        favoritedMsgs.sort()
+        mChatMsgAdapter?.notifyDataSetChanged()
     }
 
     fun refreshChatView() {
@@ -392,8 +397,8 @@ class ChatRoomActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val curPos: Int = mChatMsgAdapter!!.getClickedPos()
         when (item.itemId) {
-            R.id.chat_me_delete -> deleteMessage(curPos)
-            R.id.chat_me_favorite -> favoriteMessage(curPos, true)
+//            R.id.chat_me_delete -> deleteMessage(curPos)
+            R.id.chat_me_favorite -> favoriteMessage(curPos)
             else -> {
             }
         }

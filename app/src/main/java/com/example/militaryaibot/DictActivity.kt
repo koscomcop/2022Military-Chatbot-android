@@ -85,7 +85,7 @@ class DictActivity : AppCompatActivity() {
             if (itmpos != null && curtxt != "") {
 //                drawerContent?.smoothScrollToPosition(curpos)
 //                drawerContent?.performItemClick(drawerContent, curpos, dictAdapter!!.getItemId(curpos))
-                drawerContent?.smoothScrollToPositionFromTop(itmpos, 0, 100)
+                drawerContent?.smoothScrollToPositionFromTop(itmpos, 0, 0)
                 drawerContent?.performItemClick(drawerContent, itmpos, dictAdapter!!.getItemId(itmpos))
                 curpos = itmpos
             }
