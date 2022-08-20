@@ -12,7 +12,7 @@ data class MilDict(
     @ColumnInfo(name = "word_eng") val word_eng: String?,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "detail") val detail: String?,
-    @ColumnInfo(name = "detail2") val detail2: String?,
+    @ColumnInfo(name = "detail2") val detail2: String?
 )
 
 @Dao
@@ -32,4 +32,7 @@ interface MilDictDao {
 
     @Query("SELECT description FROM military_dict WHERE word = :input")
     fun getDescWithWord(input: String): String
+
+    @Query("SELECT word FROM military_dict WHERE word LIKE '%' || :input || '%'")
+    fun getDescsWithWord(input: String): Array<String>
 }

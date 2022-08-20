@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:scrollbarTrackVertical="@color/grey_10"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.MilitaryAIBot.FullscreenContainer"
+    tools:context=".DictActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/spacing_middle"
+        android:background="@color/grey_10"
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/search_ttl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_middle"
+            android:hint="..."
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/search_b"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/grey_10"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:id="@+id/search_content" />
+</LinearLayout>
